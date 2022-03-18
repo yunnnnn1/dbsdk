@@ -34,11 +34,48 @@ https://www.cnblogs.com/taadis/p/12132809.html
 	res, _ := mysqldb.SelectToJson(querysql)
 	fmt.Println(res)
 ```
+###### result :
+```azure
+[{
+    "created_by": {
+        "String": "",
+        "Valid": false
+    },
+    "id": {
+        "String": "10",
+        "Valid": true
+    },
+    "operate_page": {
+        "String": "zzzzzzzz",
+        "Valid": true
+    },
+    "when_created": {
+        "String": "2022-03-17T22:37:23+08:00",
+        "Valid": true
+    }
+}]
+```
+
 #### SelectToRowsData:  show engine innodb status 
 ```go
 	querysql := fmt.Sprintf("%s", "show engine innodb status")
 	res, _ := mysqldb.SelectToRowsData(querysql)
 	fmt.Println(res.Data)
+```
+###### res:
+```azure
+[[{InnoDB true} { true} {
+=====================================
+2022-03-18 10:04:00 140672645170944 INNODB MONITOR OUTPUT
+=====================================
+Per second averages calculated from the last 59 seconds
+-----------------
+BACKGROUND THREAD
+-----------------
+srv_master_thread loops: 5073576 srv_active, 0 srv_shutdown, 1710 srv_idle
+srv_master_thread log flush and writes: 0
+----------
+...
 ```
 ### DML  Method:
  1. insert
