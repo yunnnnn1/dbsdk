@@ -14,15 +14,12 @@ $ go get -u github.com/jingmingyu/dbsdk
 ##### Init MySQL DB
 ```go
     mysqldb := db_mysql.MYSQL{
-		Host:     "IP",
+		Host:     "127.0.0.1",
 		Port:     "3306",
-		Username: "xxxxxx",
-		Password: "xxxxxx",
-		Dbname:   "xxxxxxx",
+		Username: "test",
+		Password: "test",
+		Dbname:   "mytestdb",
 	}
-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
-https://segmentfault.com/a/1190000020105590
-https://www.cnblogs.com/taadis/p/12132809.html
 ```
 ### Select  Method:
  1. SelectToJson 
