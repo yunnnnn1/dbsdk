@@ -10,6 +10,29 @@
 $ go get -u github.com/jingmingyu/dbsdk 
 ```
 
+# DB Pool sdk Usage:
+##### How to Run
+```go
+import (
+    dbpool "github.com/jingmingyu/dbsdk"
+    "fmt"
+    )
+
+func mytest()  {
+	for i:=0 ; i< 100; i++{
+		fmt.Println(i)
+	}
+}
+
+func main() {
+	mypool := dbpool.NewGoPool(dbpool.WithMaxLimit(10))
+	defer mypool.Wait()
+	mypool.Submit(func() {
+		mytest()
+	})
+}
+```
+
 # MYSQL sdk Usage:
 ##### Init MySQL DB
 ```go
