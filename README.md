@@ -1,8 +1,8 @@
 
 # dbsdk
-![LICENSE](https://img.shields.io/badge/license-AGPL%20-blue.svg)
-![](https://img.shields.io/badge/build-release-brightgreen.svg)  
-![](https://img.shields.io/badge/version-v1.1.0-brightgreen.svg)
+[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-k9GRLkc3-1652194886838)(https://img.shields.io/badge/license-AGPL%20-blue.svg)]
+[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-TExOHFA7-1652194886839)(https://img.shields.io/badge/build-release-brightgreen.svg)] 
+[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-rO3Q5ClI-1652194886840)(https://img.shields.io/badge/version-v1.1.0-brightgreen.svg)]
 
 #  Installation
 
@@ -10,7 +10,7 @@
 $ go get -u github.com/jingmingyu/dbsdk 
 ```
 
-# MYSQL sdk Usage: 
+# MYSQL sdk Usage:
 ##### Init MySQL DB
 ```go
     mysqldb := db_mysql.MYSQL{
@@ -22,17 +22,49 @@ $ go get -u github.com/jingmingyu/dbsdk
 	}
 ```
 ### Select  Method:
- 1. SelectToJson 
- 2. SelectToRowsData
+1. SelectToJson
+2. SelectToRowsData
 
-##### SelectToJson : Ordinary select  like select / show master status 
+##### SelectToJson : Ordinary select  like select / show master status
 ```go
+    import (
+       sdk "github.com/jingmingyu/dbsdk"
+       "encoding/json"
+       "fmt"
+       )
+        
+    type DBData struct {
+       Created_by   *sdk.BaseInfo `json:"created_by"`
+       Id           *sdk.BaseInfo `json:"id"`
+       Operate_page *sdk.BaseInfo `json:"operate_page"`
+       When_created *sdk.BaseInfo `json:"when_created"`
+    }
+		
 	querysql := fmt.Sprintf("%s", "SELECT * FROM `dbtool_accesslog`")
 	res, _ := mysqldb.SelectToJson(querysql)
 	fmt.Println(res)
+
+	// select one res to json 
+	fmt.Println("this select for one")
+	if err := json.Unmarshal([]byte(res[0]), &resdata); err == nil {
+		fmt.Println(resdata.Operate_page.String)
+	} else {
+		fmt.Println(err)
+	}
+
+	// select all res to json 
+	fmt.Println("this select for all")
+	for i := 0; i< len(res) ; i++ {
+	if err := json.Unmarshal([]byte(res[i]), &resdata); err == nil {
+		fmt.Println(resdata.Operate_page.String)
+	} else {
+		fmt.Println(err)
+		}
+	}
 ```
 ###### result :
 ```azure
+res：
 [{
     "created_by": {
         "String": "",
@@ -51,13 +83,18 @@ $ go get -u github.com/jingmingyu/dbsdk
         "Valid": true
     }
 }]
+
+select one res 
+	Dashboard
+select all res 
+	Dashboard
 ```
 
-#### SelectToRowsData:  show engine innodb status 
+#### SelectToRowsData:  show engine innodb status
 ```go
 	querysql := fmt.Sprintf("%s", "show engine innodb status")
-	res, _ := mysqldb.SelectToRowsData(querysql)
-	fmt.Println(res.Data)
+res, _ := mysqldb.SelectToRowsData(querysql)
+fmt.Println(res.Data)
 ```
 ###### res:
 ```azure
@@ -75,72 +112,72 @@ srv_master_thread log flush and writes: 0
 ...
 ```
 ### DML  Method:
- 1. insert
+1. insert
  ```go
 	insertsql := fmt.Sprintf("%s", "insert into `dbtool_accesslog`( `operate_page` , `when_created` ) VALUE ('zzzzzzzz',now())")
-	res, _ := mysqldb.DirectExec(insertsql)
-	fmt.Println(res)
+res, _ := mysqldb.DirectExec(insertsql)
+fmt.Println(res)
 ```
- 2. delete
+2. delete
 ```go
     deletesql := fmt.Sprintf("%s", "delete from `dbtool_accesslog`")
-    res, _ := mysqldb.DirectExec(deletesql)
-    fmt.Println(res)
+res, _ := mysqldb.DirectExec(deletesql)
+fmt.Println(res)
 ```
- 3. update
+3. update
 ```go
 	updatesql := fmt.Sprintf("%s", "update `dbtool_accesslog` set operate_page='ascd' ")
-	res, _ := mysqldb.DirectExec(updatesql)
-	fmt.Println(res)
+res, _ := mysqldb.DirectExec(updatesql)
+fmt.Println(res)
 ```
 ### TRX Exec  Method:
- 1. DirectExec
+1. DirectExec
 ```go
 	updatesql := fmt.Sprintf("%s", "update `dbtool_accesslog` set operate_page='ascd' ")
-	res, _ := mysqldb.DirectExec(updatesql)
-	fmt.Println(res)
+res, _ := mysqldb.DirectExec(updatesql)
+fmt.Println(res)
 
-	exec add/drop ddl
-	addsql := fmt.Sprintf("%s", "alter table dbtool_accesslog add zzz int(2)")
-	res, _ := mysqldb.DirectExec(addsql)
-	fmt.Println(res)
+exec add/drop ddl
+addsql := fmt.Sprintf("%s", "alter table dbtool_accesslog add zzz int(2)")
+res, _ := mysqldb.DirectExec(addsql)
+fmt.Println(res)
 
-	dropsql := fmt.Sprintf("%s", "alter table dbtool_accesslog drop  COLUMN zzz ")
-	res, _ := mysqldb.DirectExec(dropsql)
-	fmt.Println(res)
+dropsql := fmt.Sprintf("%s", "alter table dbtool_accesslog drop  COLUMN zzz ")
+res, _ := mysqldb.DirectExec(dropsql)
+fmt.Println(res)
 ```
- 2. SingleTrxExec
+2. SingleTrxExec
 ```go
 	//single trx exec
-	// 单个事务执行
-	trxsql := fmt.Sprintf("%s", "insert into `dbtool_accesslog`( `operate_page` , `when_created` ) VALUE ('zzzzzzzz',now())")
-	res, err := mysqldb.SingleTrxExec(trxsql)
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Println(res)
+// 单个事务执行
+trxsql := fmt.Sprintf("%s", "insert into `dbtool_accesslog`( `operate_page` , `when_created` ) VALUE ('zzzzzzzz',now())")
+res, err := mysqldb.SingleTrxExec(trxsql)
+if err != nil {
+fmt.Println(err)
+}
+fmt.Println(res)
 ```
 
- 4. ComTrxExec
+4. ComTrxExec
 ```go
 	// combine trx exec
-	// 组合事务顺序执行
-	var trx []string
-	trxsql1 := fmt.Sprintf("%s", "insert into `dbtool_accesslog`( `operate_page` , `when_created` ) VALUE ('zzzzzzzz',now())")
-	trxsql2 := fmt.Sprintf("%s", "insert into `dbtool_accesslog`( `operate_page` , `when_created` ) VALUE ('bbbbb',now())")
-	trxsql3 := fmt.Sprintf("%s", "insert into `dbtool_accesslog`( `operate_page` , `when_created` ) VALUE ('bbbbb',now())")
-	trxsql4 := fmt.Sprintf("%s", "update `dbtool_accesslog` set operate_page='zzzzzzzz' where operate_page='ascd'")
-	trxsql5 := fmt.Sprintf("%s", "insert into `dbtool_accesslog`( `operate_page` , `when_created` ) VALUE ('zzzzzzzz',now())")
-	
-	trx = append(trx,trxsql1,trxsql2,trxsql3,trxsql4,trxsql5)
-	
-	res, err := mysqldb.ComTrxExec(trx)
-	
-	if err != nil {
-		fmt.Println(err)
-	}
-	
-	for _,v := range res{
-		fmt.Println(v)
-	}
+// 组合事务顺序执行
+var trx []string
+trxsql1 := fmt.Sprintf("%s", "insert into `dbtool_accesslog`( `operate_page` , `when_created` ) VALUE ('zzzzzzzz',now())")
+trxsql2 := fmt.Sprintf("%s", "insert into `dbtool_accesslog`( `operate_page` , `when_created` ) VALUE ('bbbbb',now())")
+trxsql3 := fmt.Sprintf("%s", "insert into `dbtool_accesslog`( `operate_page` , `when_created` ) VALUE ('bbbbb',now())")
+trxsql4 := fmt.Sprintf("%s", "update `dbtool_accesslog` set operate_page='zzzzzzzz' where operate_page='ascd'")
+trxsql5 := fmt.Sprintf("%s", "insert into `dbtool_accesslog`( `operate_page` , `when_created` ) VALUE ('zzzzzzzz',now())")
+
+trx = append(trx,trxsql1,trxsql2,trxsql3,trxsql4,trxsql5)
+
+res, err := mysqldb.ComTrxExec(trx)
+
+if err != nil {
+fmt.Println(err)
+}
+
+for _,v := range res{
+fmt.Println(v)
+}
 ```
