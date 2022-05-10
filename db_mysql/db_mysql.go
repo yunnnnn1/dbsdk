@@ -8,6 +8,11 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
+type BaseInfo struct {
+	String string
+	Vaild  string
+}
+
 type MYSQL struct {
 	Host     string
 	Port     string
