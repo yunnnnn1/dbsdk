@@ -92,7 +92,7 @@ select all res
 
 #### SelectToRowsData:  show engine innodb status
 ```go
-	querysql := fmt.Sprintf("%s", "show engine innodb status")
+querysql := fmt.Sprintf("%s", "show engine innodb status")
 res, _ := mysqldb.SelectToRowsData(querysql)
 fmt.Println(res.Data)
 ```
