@@ -1,8 +1,8 @@
 
 # dbsdk
-[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-k9GRLkc3-1652194886838)(https://img.shields.io/badge/license-AGPL%20-blue.svg)]
-[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-TExOHFA7-1652194886839)(https://img.shields.io/badge/build-release-brightgreen.svg)] 
-[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-rO3Q5ClI-1652194886840)(https://img.shields.io/badge/version-v1.1.0-brightgreen.svg)]
+![LICENSE](https://img.shields.io/badge/license-AGPL%20-blue.svg)
+![](https://img.shields.io/badge/build-release-brightgreen.svg)  
+![](https://img.shields.io/badge/version-v1.1.0-brightgreen.svg)
 
 #  Installation
 
