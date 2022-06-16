@@ -17,7 +17,6 @@ type ORACLE struct {
 	ServiceName string
 }
 
-
 type CellData sql.NullString
 
 type RowMap map[string]CellData
@@ -75,9 +74,9 @@ func (o *ORACLE) connect() (*sql.DB, error) {
 		o.ServiceName = "xe"
 	}
 
-	db, err := sql.Open("oracle", fmt.Sprintf("oracle://%s:%s@%s:%s/%s", o.User, o.Password, o.Host, o.Port, o.ServiceName))
+	db, err := sql.Open("oracle", fmt.Sprintf("oracle://%s:%s@%s:%s/%s", o.Username, o.Password, o.Host, o.Port, o.ServiceName))
 	if err != nil {
-		return nil, errors.Wrapf(err,"failed to connect to %s", o.String())
+		return nil, errors.Wrapf(err, "failed to connect to %s", o.String())
 	}
 	err = db.Ping()
 	if err != nil {
@@ -130,7 +129,6 @@ func (o *ORACLE) SelectToJson(query string) ([]string, error) {
 	return myres, nil
 
 }
-
 
 // for show  engine innodb status
 func (o *ORACLE) SelectToRowsData(query string) (NamedResultData, error) {

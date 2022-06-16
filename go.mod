@@ -19,6 +19,7 @@ require (
 require (
 	github.com/kr/pretty v0.2.1
 	github.com/pingcap/tidb/parser v0.0.0-20211124132551-4a1b2e9fe5b5
+	github.com/pkg/errors v0.8.1
 )
 
-require github.com/sijms/go-ora/v2 v2.4.24 // indirect
+require github.com/sijms/go-ora/v2 v2.4.24
