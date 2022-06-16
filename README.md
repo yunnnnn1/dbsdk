@@ -2,7 +2,7 @@
 # dbsdk
 ![LICENSE](https://img.shields.io/badge/license-AGPL%20-blue.svg)
 ![](https://img.shields.io/badge/build-release-brightgreen.svg)  
-![](https://img.shields.io/badge/version-v1.1.0-brightgreen.svg)
+![](https://img.shields.io/badge/version-v1.1.2-brightgreen.svg)
 
 #  Installation
 
