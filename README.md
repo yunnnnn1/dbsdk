@@ -232,7 +232,7 @@ fmt.Println(v)
 1. SelectToJson
 2. SelectToRowsData
 
-##### SelectToJson : Ordinary select  like select / show master status
+##### SelectToJson : Ordinary select  like select 
 ```go
     import (
         "encoding/json"
