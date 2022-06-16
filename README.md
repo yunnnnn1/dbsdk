@@ -51,23 +51,35 @@ func main() {
 ##### SelectToJson : Ordinary select  like select / show master status
 ```go
     import (
-       sdk "github.com/jingmingyu/dbsdk"
-       "encoding/json"
-       "fmt"
+        "encoding/json"
+        "fmt"
+        "github.com/jingmingyu/dbsdk/db_mysql"
+        bs "github.com/jingmingyu/dbsdk/db_public"
        )
-        
+
     type DBData struct {
-       Created_by   *sdk.BaseInfo `json:"created_by"`
-       Id           *sdk.BaseInfo `json:"id"`
-       Operate_page *sdk.BaseInfo `json:"operate_page"`
-       When_created *sdk.BaseInfo `json:"when_created"`
+        Created_by   *bs.BaseInfo `json:"created_by"`
+        Id           *bs.BaseInfo `json:"id"`
+        Operate_page *bs.BaseInfo `json:"operate_page"`
+        When_created *bs.BaseInfo `json:"when_created"`
     }
 		
-	querysql := fmt.Sprintf("%s", "SELECT * FROM `dbtool_accesslog`")
-	res, _ := mysqldb.SelectToJson(querysql)
-	fmt.Println(res)
+	var resdata DBData
 
-	// select one res to json 
+    // for mysql 
+	mysqldb := db_mysql.MYSQL{
+        Host:     "127.0.0.1",
+        Port:     "3306",
+        Username: "test",
+        Password: "test",
+        Dbname:   "mytestdb",}
+	
+    querysql := fmt.Sprintf("%s", "SELECT * FROM `dbtool_accesslog`")
+    res, _ := mysqldb.SelectToJson(querysql)
+    fmt.Println(res)
+	
+	
+    // select one res to json 
 	fmt.Println("this select for one")
 	if err := json.Unmarshal([]byte(res[0]), &resdata); err == nil {
 		fmt.Println(resdata.Operate_page.String)
@@ -203,4 +215,92 @@ fmt.Println(err)
 for _,v := range res{
 fmt.Println(v)
 }
+```
+
+
+# Oracle sdk Usage:
+##### Init Oracle DB
+```go
+	oracledb := db_oracle.ORACLE{
+        Host:     "192.168.1.21",
+        Port:     "1521",
+        Username: "test",
+        Password: "test",
+        ServiceName:   "orcl",}
+```
+### Select  Method:
+1. SelectToJson
+2. SelectToRowsData
+
+##### SelectToJson : Ordinary select  like select / show master status
+```go
+    import (
+        "encoding/json"
+        "fmt"
+        "github.com/jingmingyu/dbsdk/db_oracle"
+        bs "github.com/jingmingyu/dbsdk/db_public"
+       )
+
+    type DBData struct {
+        Created_by   *bs.BaseInfo `json:"created_by"`
+        Id           *bs.BaseInfo `json:"id"`
+        Operate_page *bs.BaseInfo `json:"operate_page"`
+        When_created *bs.BaseInfo `json:"when_created"`
+    }
+		
+	var resdata DBData
+
+    // for mysql 
+	oracledb := db_oracle.ORACLE{
+        Host:     "192.168.1.21",
+        Port:     "1521",
+        Username: "test",
+        Password: "test",
+        ServiceName:   "orcl",}
+
+    querysql := fmt.Sprintf("%s", "SELECT * FROM test")
+    res, _ := oracledb.SelectToJson(querysql)
+    fmt.Println(res)
+    
+    // select one res to json
+    fmt.Println("this select for one")
+    if err := json.Unmarshal([]byte(res[0]), &resdata); err == nil {
+        fmt.Println(resdata.Operate_page.String)
+	} else {
+        fmt.Println(err)
+    }
+    
+    // select all res to json
+    fmt.Println("this select for all")
+    for i := 0; i< len(res) ; i++ {
+        if err := json.Unmarshal([]byte(res[i]), &resdata); err == nil {
+            fmt.Println(resdata.Operate_page.String)
+    } else {
+        fmt.Println(err)
+    }
+}
+```
+###### result :
+```azure
+res：
+[{
+    "created_by": {
+        "String": "",
+        "Valid": false
+    },
+    "id": {
+        "String": "10",
+        "Valid": true
+    },
+    "operate_page": {
+        "String": "zzzzzzzz",
+        "Valid": true
+    },
+    "when_created": {
+        "String": "2022-03-17T22:37:23+08:00",
+        "Valid": true
+    }
+}]
+
+
 ```

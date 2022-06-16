@@ -12,16 +12,11 @@ import (
 type ORACLE struct {
 	Host        string
 	Port        string
-	User        string
+	Username    string
 	Password    string
 	ServiceName string
 }
 
-
-type BaseInfo struct {
-	String string
-	Vaild  string
-}
 
 type CellData sql.NullString
 
