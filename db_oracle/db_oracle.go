@@ -30,10 +30,10 @@ type NamedResultData struct {
 	Data    ResultData
 }
 
-func rowToMap(row []CellData, columns []string) map[string]CellData {
-	m := make(map[string]CellData)
+func rowToMap(row []CellData, columns []string) map[string]string {
+	m := make(map[string]string)
 	for k, data_col := range row {
-		m[columns[k]] = data_col
+		m[columns[k]] = data_col.String
 	}
 	return m
 }
@@ -128,6 +128,17 @@ func (o *ORACLE) SelectToJson(query string) ([]string, error) {
 	}
 	return myres, nil
 
+}
+
+func (m *ORACLE) SelectToMap(query string) ([]interface{}, error) {
+	var myres []interface{}
+	resultData, columns, _ := m.rowToStruct(query)
+	for _, row := range resultData {
+		rowmap := rowToMap(row, columns)
+		myres = append(myres, rowmap)
+
+	}
+	return myres, nil
 }
 
 // for show  engine innodb status

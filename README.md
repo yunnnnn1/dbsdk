@@ -47,6 +47,7 @@ func main() {
 ### Select  Method:
 1. SelectToJson
 2. SelectToRowsData
+3. SelectToMap
 
 ##### SelectToJson : Ordinary select  like select / show master status
 ```go
@@ -54,14 +55,13 @@ func main() {
         "encoding/json"
         "fmt"
         "github.com/jingmingyu/dbsdk/db_mysql"
-        bs "github.com/jingmingyu/dbsdk/db_public"
        )
 
     type DBData struct {
-        Created_by   *bs.BaseInfo `json:"created_by"`
-        Id           *bs.BaseInfo `json:"id"`
-        Operate_page *bs.BaseInfo `json:"operate_page"`
-        When_created *bs.BaseInfo `json:"when_created"`
+        Created_by   string `json:"created_by"`
+        Id           string `json:"id"`
+        Operate_page string `json:"operate_page"`
+        When_created string `json:"when_created"`
     }
 		
 	var resdata DBData
@@ -82,7 +82,7 @@ func main() {
     // select one res to json 
 	fmt.Println("this select for one")
 	if err := json.Unmarshal([]byte(res[0]), &resdata); err == nil {
-		fmt.Println(resdata.Operate_page.String)
+		fmt.Println(resdata.Operate_page)
 	} else {
 		fmt.Println(err)
 	}
@@ -91,38 +91,32 @@ func main() {
 	fmt.Println("this select for all")
 	for i := 0; i< len(res) ; i++ {
 	if err := json.Unmarshal([]byte(res[i]), &resdata); err == nil {
-		fmt.Println(resdata.Operate_page.String)
+		fmt.Println(resdata.Operate_page)
 	} else {
 		fmt.Println(err)
 		}
 	}
 ```
 ###### result :
-```azure
+```go
 res：
-[{
-    "created_by": {
-        "String": "",
-        "Valid": false
-    },
-    "id": {
-        "String": "10",
-        "Valid": true
-    },
-    "operate_page": {
-        "String": "zzzzzzzz",
-        "Valid": true
-    },
-    "when_created": {
-        "String": "2022-03-17T22:37:23+08:00",
-        "Valid": true
-    }
-}]
+    [{
+        "created_by": "",
+        "id": "10",
+        "operate_page": "zzzzzzzz",
+        "when_created": "2022-03-17T22:37:23+08:00"
+    } {
+        "created_by": "",
+        "id": "11",
+        "operate_page": "azzzzzzz",
+        "when_created": "2022-03-17T22:37:23+08:00"
+    } {
+        "created_by": "",
+        "id": "12",
+        "operate_page": "bzzzzzzz",
+        "when_created": "2022-03-17T22:37:23+08:00"
+    }]
 
-select one res 
-	Dashboard
-select all res 
-	Dashboard
 ```
 
 #### SelectToRowsData:  show engine innodb status
@@ -132,7 +126,7 @@ res, _ := mysqldb.SelectToRowsData(querysql)
 fmt.Println(res.Data)
 ```
 ###### res:
-```azure
+```go
 [[{InnoDB true} { true} {
 =====================================
 2022-03-18 10:04:00 140672645170944 INNODB MONITOR OUTPUT
@@ -231,6 +225,7 @@ fmt.Println(v)
 ### Select  Method:
 1. SelectToJson
 2. SelectToRowsData
+3. SelectToMap
 
 ##### SelectToJson : Ordinary select  like select 
 ```go
@@ -238,14 +233,13 @@ fmt.Println(v)
         "encoding/json"
         "fmt"
         "github.com/jingmingyu/dbsdk/db_oracle"
-        bs "github.com/jingmingyu/dbsdk/db_public"
        )
 
     type DBData struct {
-        Created_by   *bs.BaseInfo `json:"created_by"`
-        Id           *bs.BaseInfo `json:"id"`
-        Operate_page *bs.BaseInfo `json:"operate_page"`
-        When_created *bs.BaseInfo `json:"when_created"`
+        Created_by   string `json:"created_by"`
+        Id           string `json:"id"`
+        Operate_page string `json:"operate_page"`
+        When_created string `json:"when_created"`
     }
 		
 	var resdata DBData
@@ -265,7 +259,7 @@ fmt.Println(v)
     // select one res to json
     fmt.Println("this select for one")
     if err := json.Unmarshal([]byte(res[0]), &resdata); err == nil {
-        fmt.Println(resdata.Operate_page.String)
+        fmt.Println(resdata.Operate_page)
 	} else {
         fmt.Println(err)
     }
@@ -274,33 +268,31 @@ fmt.Println(v)
     fmt.Println("this select for all")
     for i := 0; i< len(res) ; i++ {
         if err := json.Unmarshal([]byte(res[i]), &resdata); err == nil {
-            fmt.Println(resdata.Operate_page.String)
+            fmt.Println(resdata.Operate_page)
     } else {
         fmt.Println(err)
     }
 }
 ```
 ###### result :
-```azure
+```go
 res：
-[{
-    "created_by": {
-        "String": "",
-        "Valid": false
-    },
-    "id": {
-        "String": "10",
-        "Valid": true
-    },
-    "operate_page": {
-        "String": "zzzzzzzz",
-        "Valid": true
-    },
-    "when_created": {
-        "String": "2022-03-17T22:37:23+08:00",
-        "Valid": true
-    }
-}]
+    [{
+        "created_by": "",
+        "id": "10",
+        "operate_page": "zzzzzzzz",
+        "when_created": "2022-03-17T22:37:23+08:00"
+    } {
+        "created_by": "",
+        "id": "11",
+        "operate_page": "azzzzzzz",
+        "when_created": "2022-03-17T22:37:23+08:00"
+    } {
+        "created_by": "",
+        "id": "12",
+        "operate_page": "bzzzzzzz",
+        "when_created": "2022-03-17T22:37:23+08:00"
+    }]
 
 
 ```
