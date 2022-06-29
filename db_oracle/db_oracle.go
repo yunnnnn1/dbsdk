@@ -9,6 +9,14 @@ import (
 	_ "github.com/sijms/go-ora/v2"
 )
 
+type OracleInterface interface {
+	SelectResToArray(query string) ([][]string, error)
+	SelectResToJson(query string) ([]string, error)
+	SelectResToMap(query string) ([]interface{}, error)
+	DirectExec(query string) (msg string, err error)
+	SingleTrxExec(query string) (msg string, err error)
+}
+
 type ORACLE struct {
 	Host        string
 	Port        string

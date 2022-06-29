@@ -9,6 +9,16 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
+type MySQLInterface interface {
+	SelectResToArray(query string) ([][]string, error)
+	SelectResToJson(query string) ([]string, error)
+	SelectResToMap(query string) ([]interface{}, error)
+	SelectToRowsData(query string) (NamedResultData, error)
+	DirectExec(query string) (msg string, err error)
+	SingleTrxExec(query string) (msg string, err error)
+	ComTrxExec(queryarry []string) (res []string, err error)
+}
+
 type MYSQL struct {
 	Host     string
 	Port     string
