@@ -164,3 +164,52 @@ func (o *ORACLE) SelectResToMap(query string) ([]interface{}, error) {
 	}
 	return myres, nil
 }
+
+// DirectExec for DML and DDL
+func (o *ORACLE) DirectExec(query string) (msg string, err error) {
+	defer func() {
+		if derr := recover(); derr != nil {
+			err = errors.New(fmt.Sprintf("DirectExec unexpected error: %+v", derr))
+		}
+	}()
+	db, _ := o.connect()
+	defer db.Close()
+
+	res, err := db.Exec(query)
+	if err != nil {
+		return "", errors.Wrapf(err, "failed to exec %s", query)
+	}
+	rownumaffected, _ := res.RowsAffected()
+	resmsg := fmt.Sprintf("RowsAffected: %d", rownumaffected)
+	return resmsg, err
+}
+
+// SingleTrxExec for TRX Exec
+func (o *ORACLE) SingleTrxExec(query string) (msg string, err error) {
+	defer func() {
+		if derr := recover(); derr != nil {
+			err = errors.New(fmt.Sprintf("SingleTrxExec unexpected error: %+v", derr))
+		}
+	}()
+	db, _ := o.connect()
+
+	defer db.Close()
+
+	trx, err := db.Begin()
+
+	if err != nil {
+		return "", errors.Wrapf(err, "failed to begin trx")
+	}
+	res, err := trx.Exec(query)
+	if err != nil {
+		trx.Rollback()
+		return "", errors.Wrapf(err, "failed to exec %s", query)
+	}
+
+	rownums, _ := res.RowsAffected()
+
+	resmsg := fmt.Sprintf("Exec Succssfully! RowsAffected: %d", rownums)
+
+	trx.Commit()
+	return resmsg, err
+}
