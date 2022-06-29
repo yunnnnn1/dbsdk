@@ -23,3 +23,5 @@ require (
 )
 
 require github.com/sijms/go-ora/v2 v2.4.24
+
+require google.golang.org/protobuf v1.26.0

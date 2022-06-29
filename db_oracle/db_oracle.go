@@ -38,6 +38,14 @@ func rowToMap(row []CellData, columns []string) map[string]string {
 	return m
 }
 
+func rowToArry(row []CellData) []string {
+	var s []string
+	for _, dataCol := range row {
+		s = append(s, dataCol.String)
+	}
+	return s
+}
+
 func (c *CellData) NullString() *sql.NullString {
 	return (*sql.NullString)(c)
 }
@@ -113,8 +121,23 @@ func (o *ORACLE) rowToStruct(query string) (resultData ResultData, columns []str
 
 }
 
-// for Select
-func (o *ORACLE) SelectToJson(query string) ([]string, error) {
+// SelectResToArray  Format Result to Array [[1,2,3],[4,5,6]]
+func (o *ORACLE) SelectResToArray(query string) ([][]string, error) {
+
+	var myres [][]string
+
+	resultData, _, _ := o.rowToStruct(query)
+
+	for _, row := range resultData {
+		rowmap := rowToArry(row)
+		myres = append(myres, rowmap)
+
+	}
+	return myres, nil
+}
+
+// SelectResToJson Format Result to Json
+func (o *ORACLE) SelectResToJson(query string) ([]string, error) {
 
 	var myres []string
 
@@ -130,22 +153,14 @@ func (o *ORACLE) SelectToJson(query string) ([]string, error) {
 
 }
 
-func (m *ORACLE) SelectToMap(query string) ([]interface{}, error) {
+// SelectResToMap Format Result to Map
+func (o *ORACLE) SelectResToMap(query string) ([]interface{}, error) {
 	var myres []interface{}
-	resultData, columns, _ := m.rowToStruct(query)
+	resultData, columns, _ := o.rowToStruct(query)
 	for _, row := range resultData {
 		rowmap := rowToMap(row, columns)
 		myres = append(myres, rowmap)
 
 	}
 	return myres, nil
-}
-
-// for show  engine innodb status
-func (o *ORACLE) SelectToRowsData(query string) (NamedResultData, error) {
-
-	resultData, columns, err := o.rowToStruct(query)
-
-	return NamedResultData{Columns: columns, Data: resultData}, err
-
 }

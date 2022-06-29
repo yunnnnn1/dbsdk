@@ -38,6 +38,14 @@ func rowToMap(row []CellData, columns []string) map[string]string {
 	return m
 }
 
+func rowToArry(row []CellData) []string {
+	var s []string
+	for _, dataCol := range row {
+		s = append(s, dataCol.String)
+	}
+	return s
+}
+
 func (c *CellData) NullString() *sql.NullString {
 	return (*sql.NullString)(c)
 }
@@ -107,13 +115,27 @@ func (m *MYSQL) rowToStruct(query string) (resultData ResultData, columns []stri
 		resultData = append(resultData, rowData)
 		return nil
 	})
-
 	return resultData, columns, err
 
 }
 
-// for Select
-func (m *MYSQL) SelectToJson(query string) ([]string, error) {
+// SelectResToArray  Format Result to Array [[1,2,3],[4,5,6]]
+func (m *MYSQL) SelectResToArray(query string) ([][]string, error) {
+
+	var myres [][]string
+
+	resultData, _, _ := m.rowToStruct(query)
+
+	for _, row := range resultData {
+		rowmap := rowToArry(row)
+		myres = append(myres, rowmap)
+
+	}
+	return myres, nil
+}
+
+// SelectResToJson Format Result to Json
+func (m *MYSQL) SelectResToJson(query string) ([]string, error) {
 
 	var myres []string
 
@@ -128,19 +150,18 @@ func (m *MYSQL) SelectToJson(query string) ([]string, error) {
 	return myres, nil
 }
 
-// for Select
-func (m *MYSQL) SelectToMap(query string) ([]interface{}, error) {
+// SelectResToMap Format Result to Map
+func (m *MYSQL) SelectResToMap(query string) ([]interface{}, error) {
 	var myres []interface{}
 	resultData, columns, _ := m.rowToStruct(query)
 	for _, row := range resultData {
 		rowmap := rowToMap(row, columns)
 		myres = append(myres, rowmap)
-
 	}
 	return myres, nil
 }
 
-// for show  engine innodb status
+// SelectToRowsData for show  engine innodb status
 func (m *MYSQL) SelectToRowsData(query string) (NamedResultData, error) {
 
 	resultData, columns, err := m.rowToStruct(query)
@@ -149,7 +170,7 @@ func (m *MYSQL) SelectToRowsData(query string) (NamedResultData, error) {
 
 }
 
-// for DML and DDL
+// DirectExec for DML and DDL
 func (m *MYSQL) DirectExec(query string) (msg string, err error) {
 	defer func() {
 		if derr := recover(); derr != nil {
@@ -168,7 +189,7 @@ func (m *MYSQL) DirectExec(query string) (msg string, err error) {
 	return resmsg, err
 }
 
-// for TRX Exec
+// SingleTrxExec for TRX Exec
 func (m *MYSQL) SingleTrxExec(query string) (msg string, err error) {
 	defer func() {
 		if derr := recover(); derr != nil {
@@ -198,7 +219,7 @@ func (m *MYSQL) SingleTrxExec(query string) (msg string, err error) {
 	return resmsg, err
 }
 
-// for Combine TRX Exec
+// ComTrxExec for Combine TRX Exec
 func (m *MYSQL) ComTrxExec(queryarry []string) (res []string, err error) {
 	defer func() {
 		if derr := recover(); derr != nil {
