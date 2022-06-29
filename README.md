@@ -45,11 +45,12 @@ func main() {
 	}
 ```
 ### Select  Method:
-1. SelectToJson
+1. SelectResToJson
 2. SelectToRowsData
-3. SelectToMap
+3. SelectResToMap
+4. SelectResToArray  result like [[1,2,3],[4,5,6]]
 
-##### SelectToJson : Ordinary select  like select / show master status
+##### SelectResToJson : Ordinary select  like select / show master status
 ```go
     import (
         "encoding/json"
@@ -75,7 +76,7 @@ func main() {
         Dbname:   "mytestdb",}
 	
     querysql := fmt.Sprintf("%s", "SELECT * FROM `dbtool_accesslog`")
-    res, _ := mysqldb.SelectToJson(querysql)
+    res, _ := mysqldb.SelectResToJson(querysql)
     fmt.Println(res)
 	
 	
@@ -223,11 +224,12 @@ fmt.Println(v)
         ServiceName:   "orcl",}
 ```
 ### Select  Method:
-1. SelectToJson
+1. SelectResToJson
 2. SelectToRowsData
-3. SelectToMap
+3. SelectResToMap
+4. SelectResToArray  result like [[1,2,3],[4,5,6]]
 
-##### SelectToJson : Ordinary select  like select 
+##### SelectResToJson : Ordinary select  like select 
 ```go
     import (
         "encoding/json"
@@ -253,7 +255,7 @@ fmt.Println(v)
         ServiceName:   "orcl",}
 
     querysql := fmt.Sprintf("%s", "SELECT * FROM test")
-    res, _ := oracledb.SelectToJson(querysql)
+    res, _ := oracledb.SelectResToJson(querysql)
     fmt.Println(res)
     
     // select one res to json

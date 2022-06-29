@@ -105,7 +105,7 @@ func (o *ORACLE) rowToStruct(query string) (resultData ResultData, columns []str
 	rows, err = db.Query(query)
 
 	if err != nil {
-		panic(err)
+		return nil, nil, errors.Wrapf(err, "failed to query %s", query)
 	}
 
 	columns, _ = rows.Columns()

@@ -3,8 +3,9 @@ package db_mysql
 import (
 	"database/sql"
 	"encoding/json"
-	"errors"
 	"fmt"
+	"github.com/pkg/errors"
+
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -82,14 +83,19 @@ func (m *MYSQL) connect() (*sql.DB, error) {
 	}
 
 	db, err := sql.Open("mysql", Dsn)
+	if err != nil {
+		return nil, errors.Wrapf(err, "failed to connect %s", Dsn)
+	}
+
+	err = db.Ping()
+	if err != nil {
+		return nil, errors.Wrapf(err, "failed to ping %s", Dsn)
+	}
 
 	db.SetConnMaxLifetime(100)
 
 	db.SetMaxIdleConns(10)
 
-	if err != nil {
-		panic(err)
-	}
 	return db, nil
 }
 
@@ -104,7 +110,7 @@ func (m *MYSQL) rowToStruct(query string) (resultData ResultData, columns []stri
 	rows, err = db.Query(query)
 
 	if err != nil {
-		panic(err)
+		return nil, nil, errors.Wrapf(err, "failed to query %s", query)
 	}
 
 	columns, _ = rows.Columns()
@@ -124,7 +130,11 @@ func (m *MYSQL) SelectResToArray(query string) ([][]string, error) {
 
 	var myres [][]string
 
-	resultData, _, _ := m.rowToStruct(query)
+	resultData, _, err := m.rowToStruct(query)
+
+	if err != nil {
+		return nil, err
+	}
 
 	for _, row := range resultData {
 		rowmap := rowToArry(row)
@@ -139,13 +149,14 @@ func (m *MYSQL) SelectResToJson(query string) ([]string, error) {
 
 	var myres []string
 
-	resultData, columns, _ := m.rowToStruct(query)
-
+	resultData, columns, err := m.rowToStruct(query)
+	if err != nil {
+		return nil, err
+	}
 	for _, row := range resultData {
 		rowmap := rowToMap(row, columns)
 		result, _ := json.MarshalIndent(rowmap, "", "    ")
 		myres = append(myres, string(result))
-
 	}
 	return myres, nil
 }
@@ -153,7 +164,11 @@ func (m *MYSQL) SelectResToJson(query string) ([]string, error) {
 // SelectResToMap Format Result to Map
 func (m *MYSQL) SelectResToMap(query string) ([]interface{}, error) {
 	var myres []interface{}
-	resultData, columns, _ := m.rowToStruct(query)
+	resultData, columns, err := m.rowToStruct(query)
+	if err != nil {
+		return nil, err
+	}
+
 	for _, row := range resultData {
 		rowmap := rowToMap(row, columns)
 		myres = append(myres, rowmap)
@@ -182,7 +197,7 @@ func (m *MYSQL) DirectExec(query string) (msg string, err error) {
 
 	res, err := db.Exec(query)
 	if err != nil {
-		panic(err)
+		return "", errors.Wrapf(err, "failed to exec %s", query)
 	}
 	rownumaffected, _ := res.RowsAffected()
 	resmsg := fmt.Sprintf("RowsAffected: %d", rownumaffected)
@@ -203,12 +218,12 @@ func (m *MYSQL) SingleTrxExec(query string) (msg string, err error) {
 	trx, err := db.Begin()
 
 	if err != nil {
-		panic(err)
+		return "", errors.Wrapf(err, "failed to begin trx")
 	}
 	res, err := trx.Exec(query)
 	if err != nil {
 		trx.Rollback()
-		panic(err)
+		return "", errors.Wrapf(err, "failed to exec %s", query)
 	}
 
 	rownums, _ := res.RowsAffected()
@@ -234,7 +249,7 @@ func (m *MYSQL) ComTrxExec(queryarry []string) (res []string, err error) {
 	trx, err := db.Begin()
 
 	if err != nil {
-		panic(err)
+		return nil, errors.Wrapf(err, "failed to begin trx")
 	}
 
 	var resmsg []string
@@ -243,7 +258,8 @@ func (m *MYSQL) ComTrxExec(queryarry []string) (res []string, err error) {
 
 		if err != nil {
 			trx.Rollback()
-			panic(err)
+			return nil, errors.Wrapf(err, "failed to exec trx")
+
 		}
 
 		rownums, _ := rowsres.RowsAffected()
