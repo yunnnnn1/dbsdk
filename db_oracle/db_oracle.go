@@ -2,6 +2,7 @@ package db_oracle
 
 import (
 	"database/sql"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"github.com/pkg/errors"
@@ -85,12 +86,18 @@ func (o *ORACLE) String() string {
 }
 
 func (o *ORACLE) connect() (*sql.DB, error) {
-
+	var Dsn string
 	if o.ServiceName == "" {
 		o.ServiceName = "xe"
 	}
 
-	db, err := sql.Open("oracle", fmt.Sprintf("oracle://%s:%s@%s:%s/%s", o.Username, o.Password, o.Host, o.Port, o.ServiceName))
+	if passwd, err := base64.StdEncoding.DecodeString(o.Password); err != nil {
+		Dsn = fmt.Sprintf("oracle://%s:%s@%s:%s/%s", o.Username, passwd, o.Host, o.Port, o.ServiceName)
+	} else {
+		Dsn = fmt.Sprintf("oracle://%s:%s@%s:%s/%s", o.Username, o.Password, o.Host, o.Port, o.ServiceName)
+	}
+
+	db, err := sql.Open("oracle", Dsn)
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to connect to %s", o.String())
 	}

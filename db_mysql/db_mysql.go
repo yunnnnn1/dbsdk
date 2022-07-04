@@ -2,6 +2,7 @@ package db_mysql
 
 import (
 	"database/sql"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"github.com/pkg/errors"
@@ -88,6 +89,8 @@ func (m *MYSQL) connect() (*sql.DB, error) {
 	var Dsn string
 	if len(m.Dbname) != 0 {
 		Dsn = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", m.Username, m.Password, m.Host, m.Port, m.Dbname)
+	} else if passwd, err := base64.StdEncoding.DecodeString(m.Password); err != nil {
+		Dsn = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", m.Username, passwd, m.Host, m.Port, m.Dbname)
 	} else {
 		Dsn = fmt.Sprintf("%s:%s@tcp(%s:%s)", m.Username, m.Password, m.Host, m.Port)
 	}
