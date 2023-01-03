@@ -1,4 +1,4 @@
-module github.com/jingmingyu/dbsdk
+module github.com/yunnnnn1/dbsdk
 
 go 1.17
 
