@@ -7,14 +7,14 @@
 #  Installation
 
 ```go
-$ go get -u github.com/jingmingyu/dbsdk 
+$ go get -u github.com/yunnnnn1/dbsdk 
 ```
 
 # DB Pool sdk Usage:
 ##### How to Run
 ```go
 import (
-    dbpool "github.com/jingmingyu/dbsdk"
+    dbpool "github.com/yunnnnn1/dbsdk"
     "fmt"
     )
 
@@ -55,7 +55,7 @@ func main() {
     import (
         "encoding/json"
         "fmt"
-        "github.com/jingmingyu/dbsdk/db_mysql"
+        "github.com/yunnnnn1/dbsdk/db_mysql"
        )
 
     type DBData struct {
@@ -234,7 +234,7 @@ fmt.Println(v)
     import (
         "encoding/json"
         "fmt"
-        "github.com/jingmingyu/dbsdk/db_oracle"
+        "github.com/yunnnnn1/dbsdk/db_oracle"
        )
 
     type DBData struct {

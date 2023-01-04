@@ -2,9 +2,9 @@ package db_sqlparser
 
 import (
 	"fmt"
-	"github.com/jingmingyu/dbsdk/db_sqlparser/myast"
 	"github.com/pingcap/tidb/parser"
 	"github.com/pingcap/tidb/parser/ast"
+	"github.com/yunnnnn1/dbsdk/db_sqlparser/myast"
 )
 
 type ParserResult struct {
